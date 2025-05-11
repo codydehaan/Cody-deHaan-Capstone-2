@@ -1,41 +1,41 @@
-#🃏 Speed Card Game (PyQt6)
+# 🃏 Speed Card Game (PyQt6)
 
 A fast-paced Speed card game built with Python and PyQt6, where quick thinking and reflexes are key! Challenge an AI opponent with drag-and-drop gameplay, dynamic difficulty levels, and sleek card visuals.
 
-##🎮 Game Features
+## 🎮 Game Features
 
--🧠 AI Opponent: Test your speed against an AI with adjustable difficulty.
+- **🧠 AI Opponent**: Test your speed against an AI with adjustable difficulty.
 
--🖱️ Drag-and-Drop Mechanics: Play cards by dragging them to the center piles.
+- **🖱️ Drag-and-Drop Mechanics**: Play cards by dragging them to the center piles.
 
--🔁 Real-Time Updates: The game adapts instantly to moves and win/tie conditions.
+- **🔁 Real-Time Updates**: The game adapts instantly to moves and win/tie conditions.
 
--💡 Can't Play Mechanic: Refresh center piles if no valid moves are available.
+- **💡 Can't Play Mechanic**: Refresh center piles if no valid moves are available.
 
--🏆 Victory & Tie Screens: Get clear feedback with styled end-game screens.
+- **🏆 Victory & Tie Screens**: Get clear feedback with styled end-game screens.
 
--🎨 Smooth UI: Clean design with card images and responsive layout.
+- **🎨 Smooth UI**: Clean design with card images and responsive layout.
 
--📋 Instructions Included: Learn how to play directly from the app.
+- **📋 Instructions Included**: Learn how to play directly from the app.
 
-#🚀 Getting Started
+# 🚀 Getting Started
 
--1. Clone the Repository
+- **1. Clone the Repository**
 
 git clone https://github.com/your-username/speed-card-game.git
 cd speed-card-game
 
--2. Install Requirements
+- **2. Install Requirements**
 
 Make sure Python 3.7+ is installed, then install PyQt6:
 
 pip install PyQt6
 
--3. Run the Game
+- **3. Run the Game**
 
 python speed_game.py
 
-##🗂️ Project Structure
+## 🗂️ Project Structure
 
 speed-card-game/
 │
@@ -44,11 +44,11 @@ speed-card-game/
 ├── README.md # This file
 └── screenshots/ # Optional: screenshots for README
 
-##🧠 How to Play
+## 🧠 How to Play
 
-Objective: Be the first to play all your cards.
+- **Objective**: Be the first to play all your cards.
 
-Rules:
+**Rules**:
 
 Play a card if it’s one rank above or below a center pile card.
 
@@ -58,11 +58,11 @@ Use the draw pile when your hand is empty.
 
 Press Can't Play to reset center cards if stuck.
 
-Win: Empty your hand and draw pile before the AI!
+**Win:** Empty your hand and draw pile before the AI!
 
-##🛠️ Customization
+## 🛠️ Customization
 
-#Want to make it your own?
+# **Want to make it your own?**
 
 🃏 Add new card styles in the cards/ folder.
 
@@ -70,13 +70,13 @@ Win: Empty your hand and draw pile before the AI!
 
 🤖 Tweak AI difficulty or behavior in ai_play().
 
-##📌 Dependencies
+## 📌 Dependencies
 
 Python 3.7+
 
 PyQt6
 
-##❤️ Acknowledgments
+## ❤️ Acknowledgments
 
 Card images from (https://kenney.itch.io/)
 
