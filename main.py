@@ -1,16 +1,19 @@
-import sys  # Import the sys module
-from PyQt6.QtWidgets import (
-    QApplication,
-    QWidget,
-    QLabel,
-    QPushButton,
-    QVBoxLayout,
-    QHBoxLayout,
-    QStackedLayout,
-)
-from PyQt6.QtCore import Qt, QTimer, QMimeData
+"""Main module for PyQt6 Speed Card Game."""
 
-from PyQt6.QtGui import QPixmap, QDrag
+# pylint: disable=invalid-name
+import sys  # Import the sys module
+from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
+    QApplication,  # pylint: disable=no-name-in-module
+    QWidget,  # pylint: disable=no-name-in-module
+    QLabel,  # pylint: disable=no-name-in-module
+    QPushButton,  # pylint: disable=no-name-in-module
+    QVBoxLayout,  # pylint: disable=no-name-in-module
+    QHBoxLayout,  # pylint: disable=no-name-in-module
+    QStackedLayout,  # pylint: disable=no-name-in-module
+)
+from PyQt6.QtCore import Qt, QTimer, QMimeData  # pylint: disable=no-name-in-module
+
+from PyQt6.QtGui import QPixmap, QDrag  # pylint: disable=no-name-in-module
 
 
 CARD_WIDTH = 72
@@ -184,10 +187,13 @@ class PlayPile(QLabel):
         if self.card is None:
             return True
         diff = abs(rank - self.card[0])
-        return diff == 1 or diff == 12  # wraparound logic
+        return diff == 1 or diff == 12
 
 
-class SpeedGame(QWidget):
+# wraparound logic
+
+
+class SpeedGame(QWidget):  # pylint: disable=too-many-instance-attributes
     """
     Represents the main game window.
     """
@@ -672,7 +678,7 @@ class SpeedGame(QWidget):
             print("Player wins!")
             QTimer.singleShot(100, lambda: self.show_win_screen("Player"))
             return
-        elif not ai_has_cards and player_has_cards:
+        if not ai_has_cards and player_has_cards:
             print("AI wins!")
             QTimer.singleShot(100, lambda: self.show_win_screen("Opponent"))
             return
