@@ -22,7 +22,8 @@ A fast-paced Speed card game built with Python and PyQt6, where quick thinking a
 
 - **1. Clone the Repository**
 
-git clone https://github.com/your-username/speed-card-game.git
+git clone https://github.com/codydehaan/Cody-deHaan-Capstone-2.git
+
 cd speed-card-game
 
 - **2. Install Requirements**
