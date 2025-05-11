@@ -1,4 +1,4 @@
-import sys
+import sys  # Import the sys module
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
@@ -18,15 +18,43 @@ CARD_HEIGHT = 96
 
 
 def load_card_pixmap(rank, suit):
+    """
+    Load a card pixmap from a file based on the given rank and suit.
+
+    Args:
+        rank (int): The rank of the card (1-13)
+        suit (str): The suit of the card (H, D, C, S)
+
+    Returns:
+        QPixmap: The loaded pixmap
+    """
     return QPixmap(f"cards/card_{rank}{suit}.png").scaled(CARD_WIDTH, CARD_HEIGHT)
 
 
 def load_card_back():
+    """
+    Load a card back pixmap from a file.
+
+    Returns:
+        QPixmap: The loaded pixmap
+    """
     return QPixmap("cards/card_back.png").scaled(CARD_WIDTH, CARD_HEIGHT)
 
 
 class CardLabel(QLabel):
+    """
+    Represents a card label in the game.
+    """
+
     def __init__(self, card, face_up=True):
+        """
+        Initialize a CardLabel instance.
+
+        Args:
+            card (tuple): A tuple representing the card, typically containing rank and suit.
+            face_up (bool, optional): Determines whether the card is face up. Defaults to True.
+        """
+
         super().__init__()
         self.card = card
         self.face_up = face_up
@@ -35,12 +63,32 @@ class CardLabel(QLabel):
         self.setVisible(True)
 
     def update_pixmap(self):
+        """
+        Update the pixmap of the card label based on its face-up status.
+
+        If the card is face up, set the pixmap to the card's image.
+        Otherwise, set the pixmap to the card back image.
+        """
+
         if self.face_up:
             self.setPixmap(load_card_pixmap(*self.card))
         else:
             self.setPixmap(load_card_back())
 
     def mouseMoveEvent(self, event):
+        """
+        Handle mouse move events to initiate a drag action for the card.
+
+        When the card is face up and the left mouse button is pressed, this method
+        initiates a drag-and-drop operation. The card's rank and suit are included
+        in the drag data as a comma-separated string. The card is temporarily hidden
+        during the drag action, and becomes visible again if the drag operation is
+        ignored.
+
+        Args:
+            event (QMouseEvent): The event object containing details of the mouse move.
+        """
+
         if not self.face_up or event.buttons() != Qt.MouseButton.LeftButton:
             return
 
@@ -58,17 +106,48 @@ class CardLabel(QLabel):
 
 
 class PlayPile(QLabel):
+    """
+    Represents a play pile in the game.
+    """
+
     def __init__(self):
+        """
+        Initialize a PlayPile instance.
+
+        Sets up the play pile to accept drag-and-drop events, initializes the card
+        to None, and sets the fixed size of the play pile to the predefined card dimensions.
+        """
+
         super().__init__()
         self.setAcceptDrops(True)
         self.card = None
         self.setFixedSize(CARD_WIDTH, CARD_HEIGHT)
 
     def dragEnterEvent(self, event):
+        """
+        Handles drag enter events by accepting the proposed action if the event
+        contains a text mime data (i.e. a card).
+
+        Args:
+            event (QDragEnterEvent): The drag enter event object.
+        """
         if event.mimeData().hasText():
             event.acceptProposedAction()
 
     def dropEvent(self, event):
+        """
+        Handle the drop event for the play pile.
+
+        This method is triggered when a card is dropped onto the play pile. It extracts
+        the card information from the event, checks if the move is valid, and updates
+        the play pile accordingly. If the move is valid, the play pile's card is updated
+        and the new card image is displayed. If not, the move is ignored. After processing,
+        it checks for win or tie conditions in the game.
+
+        Args:
+            event (QDropEvent): The drop event containing the card data.
+        """
+
         text = event.mimeData().text()
         rank, suit = text.split(",")
         rank = int(rank)
@@ -89,6 +168,19 @@ class PlayPile(QLabel):
         self.window().check_for_win_or_tie()
 
     def valid_move(self, rank):
+        """
+        Determine if a card of the given rank can be played on this pile.
+
+        The move is valid if the pile is empty, or the rank difference between the
+        new card and the current top card of the pile is 1 or 12 (to handle wraparound).
+
+        Args:
+            rank (int): The rank of the card to be played.
+
+        Returns:
+            bool: True if the move is valid, False otherwise.
+        """
+
         if self.card is None:
             return True
         diff = abs(rank - self.card[0])
@@ -96,7 +188,25 @@ class PlayPile(QLabel):
 
 
 class SpeedGame(QWidget):
+    """
+    Represents the main game window.
+    """
+
     def __init__(self):
+        """
+        Initialize a SpeedGame instance.
+
+        Sets the window title to "Speed Card Game", sets game_over to False, and
+        sets the minimum window size to 440x330.
+
+        Builds the initial deck of cards and sets up the QStackedLayout to hold
+        the different screens of the game.
+
+        Calls setup_start_screen() to set up the start screen and sets the
+        start screen as the initial screen.
+
+        Adds a win screen to the layout, but does not set it up yet.
+        """
         super().__init__()
 
         self.setWindowTitle("Speed Card Game")
@@ -123,6 +233,17 @@ class SpeedGame(QWidget):
         self.stack_layout.addWidget(self.win_screen)
 
     def build_deck(self):
+        """
+        Build and shuffle a standard deck of playing cards.
+
+        This method constructs a deck of 52 cards, with each card represented
+        as a tuple of rank and suit. The suits used are Hearts (H), Diamonds (D),
+        Clubs (C), and Spades (S), and the ranks range from 1 to 13.
+
+        Returns:
+            list: A shuffled list of tuples, each representing a card in the deck.
+        """
+
         from random import shuffle
 
         suits = ["H", "D", "C", "S"]
@@ -131,6 +252,17 @@ class SpeedGame(QWidget):
         return deck
 
     def setup_start_screen(self):
+        """
+        Set up the start screen of the game.
+
+        Creates a QVBoxLayout containing a centered title "Speed" with a large font,
+        a row of three buttons labeled "Easy", "Medium", and "Hard" that, when clicked,
+        start the game with the corresponding difficulty level (slower to faster), and
+        a button labeled "How to Play" that shows the instructions when clicked.
+
+        The layout is then set on the start screen and the start screen is set as the
+        current widget of the stacked layout.
+        """
         layout = QVBoxLayout()
 
         title = QLabel("Speed")
@@ -160,6 +292,16 @@ class SpeedGame(QWidget):
         self.stack_layout.setCurrentWidget(self.start_screen)
 
     def show_instructions(self):
+        """
+        Display the game instructions screen.
+
+        This method sets up and displays a screen with detailed instructions on how to
+        play the game. It includes a title, a series of instructional steps, and a back
+        button to return to the start screen. The layout is designed using a vertical box
+        layout with centered alignment for the title and instructions, and a styled back
+        button to navigate back to the main menu.
+        """
+
         layout = QVBoxLayout()
 
         title = QLabel("How to Play")
@@ -189,7 +331,17 @@ class SpeedGame(QWidget):
         self.stack_layout.setCurrentWidget(self.instructions_screen)
 
     def start_game(self, interval):
-        # Stop and clean previous timer
+        """
+        Start a new game with a given interval between AI moves.
+
+        This method stops any existing AI timer, cleans up any existing game
+        screen, and initializes a new game by splitting a fresh deck into
+        player, AI, and remaining cards. It then sets up the game UI and starts
+        the AI timer with the given interval.
+
+        Args:
+            interval (int): The interval in milliseconds between AI moves.
+        """
         if hasattr(self, "ai_timer"):
             self.ai_timer.stop()
             self.ai_timer.deleteLater()
@@ -225,10 +377,48 @@ class SpeedGame(QWidget):
         self.ai_timer.start(interval)
 
     def is_valid_move(self, card_rank, pile_rank):
+        """
+        Check if a card move is valid.
+
+        Args:
+            card_rank (int): Rank of the card to be moved.
+            pile_rank (int): Rank of the card on top of the pile to move to.
+
+        Returns:
+            bool: True if the move is valid, False otherwise.
+        """
+
         return (card_rank - pile_rank) % 13 == 1 or (pile_rank - card_rank) % 13 == 1
 
     def try_reset_play_piles(self):
+        """
+        Try to reset the play piles if no valid moves are possible.
+
+        This method checks if both the player and AI have no valid moves left
+        and if there are at least two cards left in the deck. If so, it pops two
+        cards from the deck and resets the play piles to these cards. This is
+        done by setting the card attribute of the play piles and updating the
+        corresponding pixmaps.
+
+        Returns:
+            None
+        """
+
         def is_valid_move(card, pile_value):
+            """
+            Determine if a card can be played on a pile based on their ranks.
+
+            The move is valid if the rank difference between the card and the pile's
+            top card is 1, considering wraparound (i.e., King to Ace or Ace to King).
+
+            Args:
+                card (tuple): A tuple representing the card, where the first element is the rank.
+                pile_value (int): The rank of the card currently on top of the pile.
+
+            Returns:
+                bool: True if the move is valid, False otherwise.
+            """
+
             value = card[0]
             return (value - pile_value) % 13 == 1 or (pile_value - value) % 13 == 1
 
@@ -262,7 +452,22 @@ class SpeedGame(QWidget):
             self.play_pile_right.setPixmap(load_card_pixmap(*right_card))
 
     def init_game_ui(self):
-        # Clear existing layout if any
+        """
+        Initialize the game UI, clearing any existing layout and setting up the
+        AI's draw pile, hand, the center play piles, and the player's draw pile
+        and hand.
+
+        This method is called when a new game is started, and it sets up the
+        initial layout of the game screen. The AI's draw pile is set up to be
+        clickable to draw cards, and the player's draw pile is set up similarly.
+        The center play piles are set up to display the initial cards, and the
+        player's hand is set up to display the initial cards. The "Can't Play"
+        button is also set up to handle cases where the player or AI cannot
+        play any cards.
+
+        Returns:
+            None
+        """
         old_layout = self.game_screen.layout()
         if old_layout is not None:
             self.clear_layout(old_layout)
@@ -349,6 +554,19 @@ class SpeedGame(QWidget):
         self.game_screen.setLayout(layout)
 
     def draw_player_card(self):
+        """
+        Draw a card from the player's deck and add it to the player's hand.
+
+        If the player's deck is empty, hide the draw pile.
+
+        This method is called when the player clicks on the draw pile. It
+        draws a card from the player's deck and adds it to the player's hand
+        if there is an available slot. If the player's deck is empty, it
+        hides the draw pile.
+
+        Returns:
+            None
+        """
         if not self.player_deck:
             self.player_draw_pile.hide()
             return
@@ -366,6 +584,18 @@ class SpeedGame(QWidget):
             self.player_draw_pile.hide()
 
     def draw_ai_card(self):
+        """
+        Draw a card from the AI's deck and add it to the AI's hand.
+
+        If the AI's deck is empty, hide the draw pile.
+
+        This method is called when the AI needs to draw a card. It draws a card
+        from the AI's deck and adds it to the AI's hand if there is an available
+        slot. If the AI's deck is empty, it hides the draw pile.
+
+        Returns:
+            None
+        """
         if not self.ai_deck:
             self.ai_draw_pile.hide()
             return
@@ -383,6 +613,19 @@ class SpeedGame(QWidget):
             self.ai_draw_pile.hide()
 
     def ai_play(self):
+        """
+        Handle AI's turn.
+
+        This method is called when the AI needs to make a move. It checks if the AI
+        has any cards in their hand that can be played on either of the two center
+        piles. If such a card exists, it is played and the AI draws a new card from
+        their deck. If the AI has no playable cards, it draws a card from their
+        deck. If the AI has no cards left in their deck, the game checks for win or
+        tie conditions.
+
+        Returns:
+            None
+        """
         if self.game_over:
             return
         for card in self.ai_hand:
@@ -404,6 +647,20 @@ class SpeedGame(QWidget):
         QTimer.singleShot(300, self.check_for_win_or_tie)
 
     def check_for_win_or_tie(self):
+        """
+        Check for win or tie conditions in the game.
+
+        This method determines if the player or AI has won the game by checking
+        their hands and decks. If either the player or AI has no visible cards
+        left in their hand and no cards left in their deck, the game ends with
+        that player as the winner. If a stalemate occurs where no valid moves
+        are possible for both players, and the deck is empty, a tie screen is
+        shown.
+
+        Returns:
+            None
+        """
+
         player_has_cards = (
             any(card.isVisible() for card in self.player_hand) or self.player_deck
         )
@@ -435,6 +692,16 @@ class SpeedGame(QWidget):
             self.show_tie_screen()
 
     def show_tie_screen(self):
+        """
+        Show the tie screen after the game has ended in a tie.
+
+        This method clears the current game layout, sets up a new layout with a tie
+        label and a main menu button, and sets the new layout as the current layout
+        of the game screen.
+
+        Returns:
+            None
+        """
         self.game_over = True
         if hasattr(self, "ai_timer"):
             self.ai_timer.stop()
@@ -475,6 +742,16 @@ class SpeedGame(QWidget):
         self.game_screen.setLayout(layout)
 
     def show_win_screen(self, winner):
+        """
+        Show the win screen after the game has ended with a winner.
+
+        This method clears the current game layout, sets up a new layout with a win
+        label and a main menu button, and sets the new layout as the current layout
+        of the game screen.
+
+        Args:
+            winner (str): The name of the player that won the game.
+        """
         self.game_over = True
         if hasattr(self, "ai_timer"):
             self.ai_timer.stop()
@@ -517,6 +794,17 @@ class SpeedGame(QWidget):
         self.stack_layout.setCurrentWidget(self.game_screen)
 
     def clear_layout(self, layout):
+        """
+        Recursively clears the given layout and its child widgets.
+
+        This method removes all widgets and sub-layouts from the provided
+        layout, setting their parent to None to avoid memory leaks. It
+        handles nested layouts by recursively clearing them.
+
+        Args:
+            layout (QLayout): The layout to be cleared. If None, the method
+                            returns immediately.
+        """
         if layout is None:
             return
         while layout.count():
