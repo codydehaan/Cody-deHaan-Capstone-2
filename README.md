@@ -35,15 +35,6 @@ pip install PyQt6
 
 python speed_game.py
 
-## 🗂️ Project Structure
-
-speed-card-game/
-│
-├── cards/ # Folder containing card images (card_1H.png, card_back.png, etc.)
-├── speed_game.py # Main game script
-├── README.md # This file
-└── screenshots/ # Optional: screenshots for README
-
 ## 🧠 How to Play
 
 - **Objective**: Be the first to play all your cards.
