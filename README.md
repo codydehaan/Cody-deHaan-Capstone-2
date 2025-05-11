@@ -37,9 +37,9 @@ python speed_game.py
 
 ## 🧠 How to Play
 
-- **Objective**: Be the first to play all your cards.
+**Objective**: Be the first to play all your cards.
 
-**Rules**:
+                **Rules**:
 
 Play a card if it’s one rank above or below a center pile card.
 
@@ -51,9 +51,9 @@ Press Can't Play to reset center cards if stuck.
 
 **Win:** Empty your hand and draw pile before the AI!
 
-## 🛠️ Customization
+# 🛠️ Customization
 
-# **Want to make it your own?**
+## **Want to make it your own?**
 
 🃏 Add new card styles in the cards/ folder.
 
