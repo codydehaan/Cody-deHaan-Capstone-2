@@ -39,7 +39,7 @@ python speed_game.py
 
 **Objective**: Be the first to play all your cards.
 
-                **Rules**:
+**Rules**
 
 Play a card if it’s one rank above or below a center pile card.
 
